@@ -41,7 +41,7 @@ namespace PrintLabelServer
                 logger.Log(ex.Message);
                 Console.WriteLine(ex.Message);
             }
-            ShowWindow(GetConsoleWindow(), 0);
+            //ShowWindow(GetConsoleWindow(), 0);
           
             Console.ReadLine();
         }

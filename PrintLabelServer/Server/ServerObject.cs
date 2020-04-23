@@ -12,6 +12,7 @@ namespace PrintLabelServer.Server
 {
     class ServerObject
     {
+        object block = new object();
         static TcpListener tcpListener; // сервер для прослушивания
         List<ClientObject> clients = new List<ClientObject>(); // все подключения
         PrintZPL printer;
@@ -22,15 +23,21 @@ namespace PrintLabelServer.Server
         }
         protected internal void AddConnection(ClientObject clientObject)
         {
-            clients.Add(clientObject);
+            lock (block)
+            {
+                clients.Add(clientObject);
+            }
         }
         protected internal void RemoveConnection(string id)
         {
-            // получаем по id закрытое подключение
-            ClientObject client = clients.FirstOrDefault(c => c.Id == id);
-            // и удаляем его из списка подключений
-            if (client != null)
-                clients.Remove(client);
+            lock (block)
+            {
+                // получаем по id закрытое подключение
+                ClientObject client = clients.FirstOrDefault(c => c.Id == id);
+                // и удаляем его из списка подключений
+                if (client != null)
+                    clients.Remove(client);
+            }
         }
         // прослушивание входящих подключений
         protected internal void Listen()
